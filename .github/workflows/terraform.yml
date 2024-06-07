@@ -67,8 +67,33 @@ jobs:
           cd terraform
           terraform destroy -var-file=vars.tfvars -auto-approve
 
+  # docker-install:
+  #   needs: terraform
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v3
+
+  #     - name: Set up Terraform
+  #       uses: hashicorp/setup-terraform@v3 
+
+  #     - name: Configure AWS Credentials
+  #       uses: aws-actions/configure-aws-credentials@v4
+  #       with:
+  #         aws-access-key-id: ${{ secrets.ACCESS_KEY }}
+  #         aws-secret-access-key: ${{ secrets.SECRET_KEY }}
+  #         aws-session-token: ${{ secrets.SESSION_TOKEN }}
+  #         aws-region: us-east-1
+
+  #     - name: install docker and its dependencies
+  #       run: |
+  #        sudo ./docker.sh
+  #        sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+          
+
   docker-install:
-    needs: terraform
+    needs: [terraform]
     runs-on: ubuntu-latest
 
     steps:
@@ -86,12 +111,23 @@ jobs:
           aws-session-token: ${{ secrets.SESSION_TOKEN }}
           aws-region: us-east-1
 
-      - name: install docker and its dependencies
-        shell: |
-         sudo ./docker.sh
-         sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-          
+      - name: Install Docker Dependencies
+        run: |
+          echo "Running docker.sh script"
+          sudo ./docker.sh
 
+      - name: Update APT and Install Docker
+        run: |
+          echo "Updating APT"
+          sudo apt-get update
+          echo "Installing Docker and dependencies"
+          sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+      - name: Verify Docker Installation
+        run: |
+          echo "Verifying Docker installation"
+          docker --version
+          docker-compose --version
 
 
 
