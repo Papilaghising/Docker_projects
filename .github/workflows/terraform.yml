@@ -1,0 +1,83 @@
+#.github/workflows/terraform
+name: Terraform Deployment
+
+on:
+  push:
+    branches:
+      - docker_ec2  
+  workflow_dispatch:
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_KEY }}
+  AWS_SESSION_TOKEN: ${{ secrets.SESSION_TOKEN }}
+  AWS-REGION: "us-east-1"
+  KEY:  ${{secrets.KEY}}
+  BUCKET: "8586-terraform-state"
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v4 
+
+
+      - name: Initialize Terraform
+        run: |
+          cd code
+          terraform init
+
+
+      - name: Apply Terraform Changes
+        run: |
+          cd code
+          terraform plan -var-file=vars.tfvars -auto-approve
+        
+
+
+      - name: Apply Terraform Changes
+        run: |
+          cd code
+          terraform apply -var-file=vars.tfvars -auto-approve
+
+
+      - name: Destroy Terraform Resources
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          cd code
+          terraform destroy -var-file=vars.tfvars -auto-approve
+
+
+  configure:
+    needs: terraform
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+
+
+      - name: install ansible and dependencies
+        run: |
+          pip3 install botocore
+          pip3 install boto3
+          pip3 install ansible
+
+
+      - name: run ansible playbook
+        run: |
+          cd ansible
+          ansible-playbook -i aws_ec2.yml playbook.yml   
+
+   
+
+
