@@ -11,7 +11,7 @@ env:
   AWS_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_KEY }}
   AWS_SESSION_TOKEN: ${{ secrets.SESSION_TOKEN }}
-  AWS-REGION: "us-east-1"
+  AWS_REGION: "us-east-1"
   backendS3Bucket: "8586-terraform-state"
   backendS3AccountId: ${{ secrets.ACCOUNT_ID }}
   backendS3StateFile: "docker-2.tfstate"
