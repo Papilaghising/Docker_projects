@@ -12,6 +12,12 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_KEY }}
   AWS_SESSION_TOKEN: ${{ secrets.SESSION_TOKEN }}
   AWS-REGION: "us-east-1"
+  backendS3Bucket: "8586-terraform-state"
+  backendS3AccountId: ${{ secrets.ACCOUNT_ID }}
+  backendS3StateFile: "docker-2.tfstate"
+  backendS3region: "us-east-1"
+
+
 
 
 jobs:
@@ -30,7 +36,7 @@ jobs:
       - name: Initialize Terraform
         run: |
           cd terraform
-          terraform init
+          terraform init -backend-config="bucket=${{ env.backendS3Bucket }}" -backend-config="key=${{ env.backendS3AccountId }}/${{ env.backendS3StateFile }}" -backend-config="region=${{ env.backendS3Region }}"
           
 
 
