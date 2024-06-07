@@ -16,42 +16,7 @@ module "ecr" {
   source = "terraform-aws-modules/ecr/aws"
 
   repository_name = "ghising-ecr"
-  repository_read_write_access_arns = var.repository_read_write_access_arns
-  repository_lifecycle_policy = jsonencode({
-    rules = [
-      {
-        rulePriority = 1,
-        description  = "Keep last 30 images",
-        selection = {
-          tagStatus     = "tagged",
-          tagPrefixList = ["v"],
-          countType     = "imageCountMoreThan",
-          countNumber   = 30
-        },
-        action = {
-          type = "expire"
-        }
-      }
-    ]
-  })
-  repository_policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Sid = "AllowPushPull",
-        Effect = "Allow",
-        Principal = {
-          AWS = "*"
-        },
-        Action = [
-          "ecr:GetDownloadUrlForLayer",
-          "ecr:BatchGetImage",
-          "ecr:BatchCheckLayerAvailability",
-          "ecr:PutImage"
-        ]
-      }
-    ]
-  })
+  create_lifecycle_policy = false
 }
 
 
