@@ -30,7 +30,7 @@ jobs:
       - name: Initialize Terraform
         run: |
           cd terraform
-          terraform init
+          terraform init --reconfigure
 
 
       - name: Apply Terraform Changes
