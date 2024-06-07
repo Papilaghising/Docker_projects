@@ -32,6 +32,10 @@ jobs:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3 
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+
+
 
       - name: Initialize Terraform
         run: |
