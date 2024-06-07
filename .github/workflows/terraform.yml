@@ -12,8 +12,7 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_KEY }}
   AWS_SESSION_TOKEN: ${{ secrets.SESSION_TOKEN }}
   AWS-REGION: "us-east-1"
-  ACCOUNT_ID:  ${{secrets.KEY}}
-  BUCKET: "8586-terraform-state"
+
 
 jobs:
   terraform:
