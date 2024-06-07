@@ -10,6 +10,8 @@ module "ec2_instance" {
   associate_public_ip_address = true
 }
 
+
+
 module "ecr" {
   source = "terraform-aws-modules/ecr/aws"
 
@@ -32,5 +34,24 @@ module "ecr" {
       }
     ]
   })
+  repository_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Sid = "AllowPushPull",
+        Effect = "Allow",
+        Principal = {
+          AWS = "*"
+        },
+        Action = [
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:PutImage"
+        ]
+      }
+    ]
+  })
 }
+
 
