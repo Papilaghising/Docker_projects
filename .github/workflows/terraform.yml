@@ -125,7 +125,7 @@ jobs:
         aws-region: us-east-1
 
     - name: Build Docker image
-      run: docker build -f docker/nginx/dockerfile -t image1 .
+      run: docker build -f frontend/dockerfile -t image1 .
 
     - name: tag
       run: docker tag image1 ${{ secrets.ECR_REPOSITORY_URI }}:v1
