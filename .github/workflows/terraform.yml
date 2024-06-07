@@ -4,7 +4,7 @@ name: Terraform Deployment
 on:
   push:
     branches:
-      - docker_ec2  
+      - docker 
   workflow_dispatch:
 
 env:
