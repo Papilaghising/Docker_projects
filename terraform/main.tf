@@ -17,3 +17,4 @@ module "ecr" {
 
   repository_read_write_access_arns = var.repository_read_write_access_arns
 }
+# ḍ,śṁnkj
