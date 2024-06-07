@@ -67,6 +67,31 @@ jobs:
           cd terraform
           terraform destroy -var-file=vars.tfvars -auto-approve
 
+  docker-install:
+    need: terraform
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3 
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.SECRET_KEY }}
+          aws-session-token: ${{ secrets.SESSION_TOKEN }}
+          aws-region: us-east-1
+
+      - name: install docker and its dependencies
+        run: |
+          
+        
+
+
 
   # configure:
   #   needs: terraform
