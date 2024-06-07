@@ -14,7 +14,16 @@ module "ecr" {
   source = "terraform-aws-modules/ecr/aws"
 
   repository_name = "ghising-ecr"
-
+  scanning_configuration = {
+    rules = [
+      {
+        scan_frequency = "SCAN_ON_PUSH"
+        repository_filter = {
+          filter      = "*"
+          filter_type = "WILDCARD"
+        }
+      }]
+  }
   repository_read_write_access_arns = var.repository_read_write_access_arns
 }
-# ḍ,śṁnkj
+
