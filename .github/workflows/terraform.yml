@@ -12,7 +12,7 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_KEY }}
   AWS_SESSION_TOKEN: ${{ secrets.SESSION_TOKEN }}
   AWS-REGION: "us-east-1"
-  KEY:  ${{secrets.KEY}}
+  ACCOUNT_ID:  ${{secrets.KEY}}
   BUCKET: "8586-terraform-state"
 
 jobs:
@@ -54,29 +54,29 @@ jobs:
           terraform destroy -var-file=vars.tfvars -auto-approve
 
 
-  configure:
-    needs: terraform
-    runs-on: ubuntu-latest
+  # configure:
+  #   needs: terraform
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v4
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-
-
-      - name: install ansible and dependencies
-        run: |
-          pip3 install botocore
-          pip3 install boto3
-          pip3 install ansible
+  #     - name: Configure AWS Credentials
+  #       uses: aws-actions/configure-aws-credentials@v4
 
 
-      - name: run ansible playbook
-        run: |
-          cd ansible
-          ansible-playbook -i aws_ec2.yml playbook.yml   
+  #     - name: install ansible and dependencies
+  #       run: |
+  #         pip3 install botocore
+  #         pip3 install boto3
+  #         pip3 install ansible
+
+
+  #     - name: run ansible playbook
+  #       run: |
+  #         cd ansible
+  #         ansible-playbook -i aws_ec2.yml playbook.yml   
 
    
 
