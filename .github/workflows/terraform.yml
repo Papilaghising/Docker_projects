@@ -16,8 +16,9 @@ env:
   backendS3AccountId: ${{ secrets.ACCOUNT_ID }}
   backendS3StateFile: "docker-2.tfstate"
   backendS3region: "us-east-1"
-  ecr-repo-uri: ${{ secrets.ECR_REPOSITORY_URI }}
-
+  ECR_REGISTRY: ${{ secrets.ECR_REPOSITORY_URI }}
+  ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+  IMAGE_TAG: latest
 
 
 
@@ -36,9 +37,9 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.SECRET_KEY }}
-          aws-session-token: ${{ secrets.SESSION_TOKEN }}
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ env.AWS_SESSION_TOKEN }}
           aws-region: us-east-1
 
 
@@ -83,9 +84,9 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.SECRET_KEY }}
-          aws-session-token: ${{ secrets.SESSION_TOKEN }}
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ env.AWS_SESSION_TOKEN }}
           aws-region: us-east-1
 
       - name: Install Docker Dependencies
@@ -119,21 +120,31 @@ jobs:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-access-key-id: ${{ secrets.ACCESS_KEY }}
-        aws-secret-access-key: ${{ secrets.SECRET_KEY }}
-        aws-session-token: ${{ secrets.SESSION_TOKEN }}
+        aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+        aws-session-token: ${{ env.AWS_SESSION_TOKEN }}
         aws-region: us-east-1
+        ECR_REGISTRY: ${{ env.ECR_REPOSITORY_URI }}
+        ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
+        IMAGE_TAG: latest
 
-    - name: Build Docker image
-      run: docker build -f frontend/dockerfile -t image1 .
+    - name: Log in to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+      with:
+        region: us-east-1
 
-    - name: tag
-      run: docker tag image1 ${{ secrets.ECR_REPOSITORY_URI }}:v1
+    - name: Build, tag, and push image to Amazon ECR
+      run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
 
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-    - name: Push Docker image to ECR
-      run: docker push ${{ secrets.ECR_REPOSITORY_URI }}:v1
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
+    - name: Verify image pushed to ECR
+    run: |
+      aws ecr describe-images --repository-name ${{ env.ECR_REPOSITORY }} --region us-east-1
 
 
   # configure:
