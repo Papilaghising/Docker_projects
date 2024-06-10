@@ -18,7 +18,7 @@ env:
   backendS3region: "us-east-1"
   ECR_REPOSITORY_URI: ${{ secrets.ECR_REPOSITORY_URI }}
   ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
-  IMAGE_TAG: latest
+  IMAGE_TAG: "latest"
 
 
 
@@ -36,11 +36,6 @@ jobs:
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ env.AWS_SESSION_TOKEN }}
-          aws-region: us-east-1
 
 
       - name: Initialize Terraform
@@ -83,11 +78,7 @@ jobs:
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ env.AWS_SESSION_TOKEN }}
-          aws-region: us-east-1
+        
 
       - name: Install Docker Dependencies
         run: |
@@ -119,14 +110,7 @@ jobs:
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
-        aws-session-token: ${{ env.AWS_SESSION_TOKEN }}
-        aws-region: us-east-1
-        ECR_REPOSITORY_URI: ${{ env.ECR_REPOSITORY_URI }}
-        ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
-        IMAGE_TAG: latest
+
 
     - name: Log in to Amazon ECR
       id: login-ecr
@@ -136,15 +120,11 @@ jobs:
 
     - name: Build, tag, and push image to Amazon ECR
       run: |
-          docker build -t $ECR_ECR_REPOSITORY_URI/$ECR_REPOSITORY:$IMAGE_TAG .
+        aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ env.ECR_REPOSITORY_URI }} 
 
-          docker tag $ECR_ECR_REPOSITORY_URI/$ECR_REPOSITORY:$IMAGE_TAG $ECR_ECR_REPOSITORY_URI/$ECR_REPOSITORY:$IMAGE_TAG
+        docker build -t ${{ ECR_REPOSITORY_URI }}:${{ IMAGE_TAG }} .
 
-          docker push $ECR_ECR_REPOSITORY_URI/$ECR_REPOSITORY:$IMAGE_TAG
-
-    - name: Verify image pushed to ECR
-      run: |
-        aws ecr describe-images --repository-name ${{ env.ECR_REPOSITORY }} --region us-east-1
+        docker push ${{ ECR_REPOSITORY_URI }}:${{ IMAGE_TAG }}
 
 
   # configure:
