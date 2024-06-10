@@ -35,6 +35,12 @@ jobs:
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
+        with:
+          AWS_ACCESS_KEY_ID: ${{ env.ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ env.SECRET_KEY }}
+          AWS_SESSION_TOKEN: ${{ env.SESSION_TOKEN }}
+          AWS_REGION: ${{ env.AWS_REGION }}
+
 
 
       - name: Initialize Terraform
@@ -77,6 +83,11 @@ jobs:
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
+        with:
+          AWS_ACCESS_KEY_ID: ${{ env.ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ env.SECRET_KEY }}
+          AWS_SESSION_TOKEN: ${{ env.SESSION_TOKEN }}
+          AWS_REGION: ${{ env.AWS_REGION }}
         
 
       - name: Install Docker Dependencies
@@ -109,6 +120,11 @@ jobs:
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
+      with:
+        AWS_ACCESS_KEY_ID: ${{ env.ACCESS_KEY }}
+        AWS_SECRET_ACCESS_KEY: ${{ env.SECRET_KEY }}
+        AWS_SESSION_TOKEN: ${{ env.SESSION_TOKEN }}
+        AWS_REGION: ${{ env.AWS_REGION }}
 
 
     - name: Log in to Amazon ECR
