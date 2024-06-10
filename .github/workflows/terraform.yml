@@ -111,7 +111,7 @@ jobs:
 
 
   build:
-    needs: [terraform,docker-install]
+    # needs: [terraform,docker-install]
     runs-on: ubuntu-latest
 
     steps:
@@ -138,7 +138,7 @@ jobs:
         aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ env.ECR_REPOSITORY_URI }} 
         
 
-        docker build -t ${{ env.ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }} .
+        docker build -t /backend/Dockerile ${{ env.ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }} .
 
         docker push ${{ env.ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}
 
