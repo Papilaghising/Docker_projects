@@ -22,96 +22,96 @@ env:
 
 
 jobs:
-  # terraform:
-  #   runs-on: ubuntu-latest
+  terraform:
+    runs-on: ubuntu-latest
 
 
-  #   steps:
-  #     - name: Checkout Repository
-  #       uses: actions/checkout@v3
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-  #     - name: Set up Terraform
-  #       uses: hashicorp/setup-terraform@v3 
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3 
 
-  #     - name: Configure AWS Credentials
-  #       uses: aws-actions/configure-aws-credentials@v4
-  #       with:
-  #         aws-access-key-id: ${{ env.ACCESS_KEY }}
-  #         aws-secret-access-key: ${{ env.SECRET_KEY }}
-  #         aws-session-token: ${{ env.SESSION_TOKEN }}
-  #         aws-region: ${{ env.AWS_REGION }}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ env.ACCESS_KEY }}
+          aws-secret-access-key: ${{ env.SECRET_KEY }}
+          aws-session-token: ${{ env.SESSION_TOKEN }}
+          aws-region: ${{ env.AWS_REGION }}
 
 
 
-  #     - name: Initialize Terraform
-  #       run: |
-  #         cd terraform
-  #         terraform init -backend-config="bucket=${{ env.backendS3Bucket }}" -backend-config="key=${{ env.backendS3AccountId }}/${{ env.backendS3StateFile }}" -backend-config="region=${{ env.backendS3Region }}"
+      - name: Initialize Terraform
+        run: |
+          cd terraform
+          terraform init -backend-config="bucket=${{ env.backendS3Bucket }}" -backend-config="key=${{ env.backendS3AccountId }}/${{ env.backendS3StateFile }}" -backend-config="region=${{ env.backendS3Region }}"
           
 
 
-  #     - name: Apply Terraform Changes
-  #       run: |
-  #         cd terraform
-  #         terraform plan -var-file=vars.tfvars 
+      - name: Apply Terraform Changes
+        run: |
+          cd terraform
+          terraform plan -var-file=vars.tfvars 
         
 
 
-  #     - name: Apply Terraform Changes
-  #       run: |
-  #         cd terraform
-  #         terraform apply -var-file=vars.tfvars -auto-approve
+      - name: Apply Terraform Changes
+        run: |
+          cd terraform
+          terraform apply -var-file=vars.tfvars -auto-approve
 
 
-  #     - name: Destroy Terraform Resources
-  #       if: github.event_name == 'workflow_dispatch'
-  #       run: |
-  #         cd terraform
-  #         terraform destroy -var-file=vars.tfvars -auto-approve
+      - name: Destroy Terraform Resources
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          cd terraform
+          terraform destroy -var-file=vars.tfvars -auto-approve
 
 
-  # docker-install:
-  #   needs: [terraform]
-  #   runs-on: ubuntu-latest
+  docker-install:
+    needs: [terraform]
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     - name: Checkout Repository
-  #       uses: actions/checkout@v3
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-  #     - name: Set up Terraform
-  #       uses: hashicorp/setup-terraform@v3 
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3 
 
-  #     - name: Configure AWS Credentials
-  #       uses: aws-actions/configure-aws-credentials@v4
-  #       with:
-  #         aws-access-key-id: ${{ env.ACCESS_KEY }}
-  #         aws-secret-access-key: ${{ env.SECRET_KEY }}
-  #         aws-session-token: ${{ env.SESSION_TOKEN }}
-  #         aws-region: ${{ env.AWS_REGION }}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ env.ACCESS_KEY }}
+          aws-secret-access-key: ${{ env.SECRET_KEY }}
+          aws-session-token: ${{ env.SESSION_TOKEN }}
+          aws-region: ${{ env.AWS_REGION }}
         
 
-  #     - name: Install Docker Dependencies
-  #       run: |
-  #         echo "Running docker.sh script"
-  #         sudo ./docker.sh
+      - name: Install Docker Dependencies
+        run: |
+          echo "Running docker.sh script"
+          sudo ./docker.sh
 
-  #     - name: Update APT and Install Docker
-  #       run: |
-  #         echo "Updating APT"
-  #         sudo apt-get update
-  #         echo "Installing Docker and dependencies"
-  #         sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+      - name: Update APT and Install Docker
+        run: |
+          echo "Updating APT"
+          sudo apt-get update
+          echo "Installing Docker and dependencies"
+          sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
       
 
-  #     - name: Verify Docker Installation
-  #       run: |
-  #         echo "Verifying Docker installation"
-  #         docker --version
-  #         docker-compose --version
+      - name: Verify Docker Installation
+        run: |
+          echo "Verifying Docker installation"
+          docker --version
+          docker-compose --version
 
 
   build:
-    # needs: [terraform,docker-install]
+    needs: [terraform,docker-install]
     runs-on: ubuntu-latest
 
     steps:
