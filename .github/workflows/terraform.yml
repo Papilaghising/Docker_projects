@@ -135,7 +135,7 @@ jobs:
 
 
     - name: Login to Amazon ECR
-    run: |
+      run: |
       aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_REGISTRY_URL }}
 
     - name: Build, tag, and push image 1
