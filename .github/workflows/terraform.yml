@@ -141,20 +141,20 @@ jobs:
     - name: Build, tag, and push image 1
       run: |
         cd frontend
-        docker build -t ${{ env.ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }} .
-        docker push ${{ env.ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}
+        docker build -t ${{ env.ECR_REPOSITORY_URI }}:fv1 .
+        docker push ${{ env.ECR_REPOSITORY_URI }}:fv1
 
     - name: Build, tag, and push image 2
       run: |
         cd backend
-        docker build -t ${{ env.ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }} .
-        docker push ${{ env.ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}
+        docker build -t ${{ env.ECR_REPOSITORY_URI }}:bv2 .
+        docker push ${{ env.ECR_REPOSITORY_URI }}: bv2
 
     - name: Build, tag, and push image 3
       run: |
         cd database
-        docker build -t ${{ env.ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }} .
-        docker push ${{ env.ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}    
+        docker build -t ${{ env.ECR_REPOSITORY_URI }}:dv3 .
+        docker push ${{ env.ECR_REPOSITORY_URI }}:dv3   
 
     # - name: Build, tag, and push image to Amazon ECR
     #   run: |
