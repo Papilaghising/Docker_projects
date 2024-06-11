@@ -148,7 +148,7 @@ jobs:
       run: |
         cd backend
         docker build -t ${{ env.ECR_REPOSITORY_URI }}:bv2 .
-        docker push ${{ env.ECR_REPOSITORY_URI }}: bv2
+        docker push ${{ env.ECR_REPOSITORY_URI }}:bv2
 
     - name: Build, tag, and push image 3
       run: |
